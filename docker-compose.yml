@@ -1,0 +1,41 @@
+version: '3.6'
+
+services:
+  # app:
+  #   container_name: app
+  #   image: node-app
+  #   restart: always
+  #   working_dir: /app
+  #   command: yarn dev
+  #   volumes:
+  #     - ./backend:/app
+  #     # - share-volumes:/app
+  #   ports:
+  #     - "127.0.0.1:4000:4000"
+  #   depends_on:
+  #     - watch
+  #   networks:
+  #     - app-proxy
+
+  watch:
+    container_name: app-watch
+    build: 
+      context: ./backend
+      dockerfile: ./Dockerfile
+    image: node-app
+    environment:
+      - NODE_ENV=development
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: yarn watch
+    restart: always
+
+networks:
+  app-proxy:
+    external:
+      name: workspace-networks
+
+volumes:
+  share-volumes:
