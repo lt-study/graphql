@@ -2,6 +2,7 @@ import { User } from "../model/User";
 import { MyContext } from "../type";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
+import { COOKIE_NAME } from "../constant/constants";
 
 @InputType()
 class UsernamePasswordInput {
@@ -52,7 +53,7 @@ export class UserResolver {
   async register(
     @Arg('options') options: UsernamePasswordInput,
     @Ctx() { em }: MyContext
-  ) : Promise<UserResponse> {
+  ): Promise<UserResponse> {
     const { username, password } = options;
     const hashedPassword = await this.hashPassword(password);
     const isUserExists = await em.count(User, { username });
@@ -69,7 +70,7 @@ export class UserResolver {
       password: hashedPassword
     });
     await em.persistAndFlush(user);
-    return {user};
+    return { user };
   }
 
   @Mutation(() => UserResponse)
@@ -97,5 +98,21 @@ export class UserResolver {
     req.session.userID = user.id;
     console.log(req.sessionID);
     return { user };
+  }
+
+  @Mutation(() => Boolean)
+  logout(
+    @Ctx() { req, res }: MyContext
+  ) {
+    return new Promise(resolve => req.session.destroy(err => {
+      if (err) {
+        resolve(false);
+        console.log('Session destroy error');
+        console.log(err);
+        return
+      }
+      res.clearCookie(COOKIE_NAME);
+      resolve(true)
+    }))
   }
 }

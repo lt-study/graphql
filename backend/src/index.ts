@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { MikroORM } from "@mikro-orm/core";
-import { WEB_URL, __prod__ } from "./constant/constants";
+import { COOKIE_NAME, WEB_URL, __prod__ } from "./constant/constants";
 import config from "./db.config";
 import express from "express";
 import { PORT } from "./constant/constants";
@@ -29,7 +29,7 @@ const main = async () => {
   
   app.use(
     session({
-      name: 'qid',
+      name: COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
         disableTouch: true,
