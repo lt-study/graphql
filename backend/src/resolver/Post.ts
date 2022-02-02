@@ -3,6 +3,8 @@ import { MyContext } from "../type";
 import { Resolver, Query, Ctx, Arg, Int, Mutation } from "type-graphql";
 
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])

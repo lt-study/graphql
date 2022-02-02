@@ -14,6 +14,8 @@ import { useMutation } from "urql";
 import { useLoginMutation,  } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
+import { createUrqlClient } from "../utils/createUrqlClient";
+import { withUrqlClient } from "next-urql";
 
 interface loginProps {}
 // const REGISTER_MUTATION = `
@@ -72,4 +74,4 @@ const Login: React.FC<loginProps> = ({}) => {
   );
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient)( Login);
